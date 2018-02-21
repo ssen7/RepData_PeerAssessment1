@@ -91,8 +91,8 @@ hist(x = df_complete$TotalSteps, xlab = "Total Steps", main = "Histogram of Step
 ![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
 
 ```r
-steps_mean_complete <- mean(df_complete$TotalSteps, na.rm = TRUE)
-steps_median_complete <- median(df_complete$TotalSteps, na.rm = TRUE)
+steps_mean_complete <- mean(df_complete$TotalSteps)
+steps_median_complete <- median(df_complete$TotalSteps)
 
 steps_mean_complete
 ```
@@ -111,3 +111,21 @@ steps_median_complete
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```r
+weekend <- c("Sunday", "Saturday")
+complete_data$wDay <- factor((weekdays(as.Date(complete_data$date)) %in% weekend),levels=c(FALSE, TRUE), labels=c('weekday','weekend'))
+complete_data$DayType <- weekdays(as.Date(complete_data$date))
+
+weekday_data <- complete_data[complete_data$wDay == "weekday", ]
+weekend_data <- complete_data[complete_data$wDay == "weekend", ]
+
+time_interval_data_wknd <- ddply(weekend_data, .(interval), summarize, average = mean(steps))
+time_interval_data_wkdy <- ddply(weekday_data, .(interval), summarize, average = mean(steps))
+
+par(mfrow = c(2,1))
+plot(time_interval_data_wknd, type = "l", main = "Weekend")
+plot(time_interval_data_wkdy, type = "l", main = "weekday")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
